@@ -17,12 +17,6 @@ class MainAdapter(val parentScope: CoroutineScope) : RecyclerView.Adapter<ItemVi
     private val _onClick: MutableSharedFlow<RepoItemEntity> = MutableSharedFlow(0)
     val onClick: SharedFlow<RepoItemEntity> = _onClick
 
-    val onClickTest: MutableSharedFlow<RepoItemEntity> = MutableSharedFlow(0)
-
-    val channel = Channel<RepoItemEntity>()
-
-    val scope = CoroutineScope(Dispatchers.Default)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ItemRepoBinding.inflate(layoutInflater, parent, false)
@@ -34,21 +28,11 @@ class MainAdapter(val parentScope: CoroutineScope) : RecyclerView.Adapter<ItemVi
         holder.binding.repoItem = repoItem
         holder.binding.repoTextStargazersCount.text = repoItem.stargazersCount.toString()
 
-//        holder.binding.parentLayout.setOnClickListener {
-//            parentScope.launch(Dispatchers.IO) {
-//                onClickTest.emit(repoItem)
-//            }
-//        }
-//
         holder.binding.clickView.setOnClickListener {
-            scope.launch {
+            parentScope.launch {
                 _onClick.emit(repoItem)
             }
         }
-    }
-
-    fun onDestroy() {
-        scope.cancel()
     }
 
     override fun getItemCount(): Int {

@@ -45,9 +45,4 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         }.launchIn(lifecycleScope)
     }
-
-    override fun onDestroy() {
-        adapter.onDestroy()
-        super.onDestroy()
-    }
 }
