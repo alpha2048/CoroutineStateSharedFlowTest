@@ -36,8 +36,13 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             viewModel.repoItems
                 .collect {
-                    binding.progress.visibility = View.INVISIBLE
-                    adapter.setItem(it)
+                    if (it.isNotEmpty()) {
+                        binding.progress.visibility = View.INVISIBLE
+                        adapter.setItem(it)
+                    } else {
+                        binding.progress.visibility = View.VISIBLE
+                    }
+
                 }
         }
 
