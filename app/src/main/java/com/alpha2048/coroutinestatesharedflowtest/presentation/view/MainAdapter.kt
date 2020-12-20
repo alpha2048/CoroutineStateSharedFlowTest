@@ -10,7 +10,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 
-class MainAdapter(val parentScope: CoroutineScope) : RecyclerView.Adapter<ItemViewHolder>() {
+class MainAdapter(private val parentScope: CoroutineScope) : RecyclerView.Adapter<ItemViewHolder>() {
 
     private var repoItems: List<RepoItemEntity> = emptyList()
 

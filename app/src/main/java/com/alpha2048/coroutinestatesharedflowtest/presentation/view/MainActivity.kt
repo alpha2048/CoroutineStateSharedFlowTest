@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.alpha2048.coroutinestatesharedflowtest.R
 import com.alpha2048.coroutinestatesharedflowtest.databinding.ActivityMainBinding
 import com.alpha2048.coroutinestatesharedflowtest.presentation.viewmodel.MainViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.collect
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
@@ -34,15 +33,21 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        viewModel.repoItems
-            .onEach {
-                binding.progress.visibility = View.INVISIBLE
-                adapter.setItem(it)
-            }.launchIn(lifecycleScope)
+        lifecycleScope.launchWhenStarted {
+            viewModel.repoItems
+                .collect {
+                    binding.progress.visibility = View.INVISIBLE
+                    adapter.setItem(it)
+                }
+        }
 
-        adapter.onClick.onEach {
-            val uri = Uri.parse(it.htmlUrl)
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
-        }.launchIn(lifecycleScope)
+        lifecycleScope.launchWhenStarted {
+            adapter.onClick
+                .collect {
+                    val uri = Uri.parse(it.htmlUrl)
+                    startActivity(Intent(Intent.ACTION_VIEW, uri))
+                }
+        }
+
     }
 }
